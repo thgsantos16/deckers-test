@@ -1,20 +1,58 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <vue-headful
+        title="Deckers Test"
+    />
+    <transition name="fade" appear mode="out-in">
+      <custom-header :motto="motto" v-if="desktop" />
+      <mobile-header v-else />
+    </transition>
+
+    <transition name="fade" appear>
+      <router-view/>
+    </transition>
   </div>
 </template>
 
+<script lang="ts">
+import CustomHeader from '@/components/CustomHeader.vue';
+import MobileHeader from '@/components/MobileHeader.vue';
+
+export default {
+  components: {
+    CustomHeader,
+    MobileHeader,
+  },
+  name: 'App',
+  data() {
+    return {
+      motto: 'Free Shipping. Free Returns',
+      windowWidth: window.innerWidth,
+    };
+  },
+  mounted() {
+    window.addEventListener('resize', () => { this.windowWidth = window.innerWidth; });
+  },
+  computed: {
+    desktop() {
+      return this.windowWidth > 992;
+    },
+  },
+};
+</script>
+
 <style lang="scss">
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text&family=Prompt:ital@0;1&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Prompt', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #222;
 }
 
 #nav {
@@ -28,5 +66,13 @@
       color: #42b983;
     }
   }
+}
+
+// Fade transition
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
